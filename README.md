@@ -511,24 +511,3 @@ def auth():
     ```bash
     npm start
     ```
-
-### Tests en Production
-
-1. Accéder à l’App Déployée :
-    - Navigue vers l’URL de ton frontend déployé sur DigitalOcean.
-
----
-
-## Soumettre à l’App Store Shopify
-
-1. **Préparer la Fiche de l’App** :
-    - Fournis une description claire,
-
- des captures d’écran et les informations nécessaires sur ton application.
-
-2. **Soumettre pour Révision** :
-    - Dans le tableau de bord Shopify Partner, soumets ton application pour révision.
-
---- 
-
-Cela couvre les étapes nécessaires pour créer, déployer et finaliser l’application Shopify Image Generator.
