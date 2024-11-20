@@ -10,56 +10,34 @@ Ce guide te fournira une vue d'ensemble des étapes nécessaires pour créer, d�
 
 ## Table des Matières
 
-1. [Pré-requis](#pré-requis)
-2. [Créer un Compte Shopify Partner](#créer-un-compte-shopify-partner)
-3. [Configurer l’Environnement de Développement](#configurer-lenvironnement-de-développement)
+
+1. [Configurer l’Environnement de Développement](#configurer-lenvironnement-de-développement)
     - [Choisir un Framework Web en Python](#choisir-un-framework-web-en-python)
     - [Installer les Outils Nécessaires](#installer-les-outils-nécessaires)
-4. [Développer le Backend avec Flask](#développer-le-backend-avec-flask)
+2. [Développer le Backend avec Flask](#développer-le-backend-avec-flask)
     - [Créer une Application Flask](#créer-une-application-flask)
     - [Intégrer le Script de Génération d’Images](#intégrer-le-script-de-génération-dimages)
     - [Créer des Endpoints API](#créer-des-endpoints-api)
-5. [Développer le Frontend avec React et Shopify Polaris](#développer-le-frontend-avec-react-et-shopify-polaris)
+3. [Développer le Frontend avec React et Shopify Polaris](#développer-le-frontend-avec-react-et-shopify-polaris)
     - [Initialiser une Application React](#initialiser-une-application-react)
     - [Installer Polaris et Axios](#installer-polaris-et-axios)
     - [Construire l’Interface Utilisateur](#construire-linterface-utilisateur)
     - [Connecter le Frontend au Backend](#connecter-le-frontend-au-backend)
-6. [Implémenter l’Authentification OAuth avec Shopify](#implémenter-lauthentification-oauth-avec-shopify)
+4. [Implémenter l’Authentification OAuth avec Shopify](#implémenter-lauthentification-oauth-avec-shopify)
     - [Configurer les Routes OAuth dans Flask](#configurer-les-routes-oauth-dans-flask)
     - [Configurer les Paramètres de l’App Shopify](#configurer-les-paramètres-de-lapp-shopify)
-7. [Déployer l’Application sur DigitalOcean](#déployer-lapplication-sur-digitalocean)
+5. [Déployer l’Application sur DigitalOcean](#déployer-lapplication-sur-digitalocean)
     - [Préparer le Serveur sur DigitalOcean](#préparer-le-serveur-sur-digitalocean)
     - [Déployer le Backend Flask](#déployer-le-backend-flask)
     - [Déployer le Frontend React](#déployer-le-frontend-react)
-8. [Tester et Finaliser l’App](#tester-et-finaliser-lapp)
+6. [Tester et Finaliser l’App](#tester-et-finaliser-lapp)
     - [Tests Locaux](#tests-locaux)
     - [Tests en Production](#tests-en-production)
     - [Soumettre à l’App Store Shopify](#soumettre-à-lapp-store-shopify)
-9. [Ressources Supplémentaires](#ressources-supplémentaires)
+7. [Ressources Supplémentaires](#ressources-supplémentaires)
 
 ---
 
-## Pré-requis
-
-Avant de commencer, assure-toi de disposer de :
-
-- **Connaissances en Développement Web** : Familiarité avec Python, Flask, JavaScript, React et les principes de développement web.
-- **Compte Shopify Partner** : Nécessaire pour créer et gérer des applications Shopify.
-- **Clé API StabilityAI** : Pour accéder à l’API de génération d’images.
-- **Environnement de Développement Configuré** : Python installé, éditeur de code (comme VS Code), etc.
-
----
-
-## Créer un Compte Shopify Partner
-
-1. **Inscription** : Rendez-toi sur [Shopify Partners](https://partners.shopify.com/) et inscris-toi pour un compte partenaire si ce n’est pas déjà fait.
-2. **Créer une Nouvelle Application** :
-    - Une fois connecté, navigue vers la section **Apps**.
-    - Clique sur **"Create app"**.
-    - Choisis **"Custom app"** ou **"Public app"** selon tes besoins. Pour une utilisation générale, une **Public app** est recommandée.
-    - Remplis les informations requises telles que le nom de l’application et l’URL de l’application.
-
----
 
 ## Configurer l’Environnement de Développement
 
