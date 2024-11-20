@@ -1,3 +1,6 @@
+Voici la version réécrite avec les balises Markdown correctement formatées :
+
+```markdown
 # Documentation de l'Application Shopify Image Generator pour Poche et Fils
 
 Salut Jeff,
@@ -9,7 +12,6 @@ Ce guide te fournira une vue d'ensemble des étapes nécessaires pour créer, d�
 ---
 
 ## Table des Matières
-
 
 1. [Configurer l’Environnement de Développement](#configurer-lenvironnement-de-développement)
     - [Choisir un Framework Web en Python](#choisir-un-framework-web-en-python)
@@ -37,7 +39,6 @@ Ce guide te fournira une vue d'ensemble des étapes nécessaires pour créer, d�
 7. [Ressources Supplémentaires](#ressources-supplémentaires)
 
 ---
-
 
 ## Configurer l’Environnement de Développement
 
@@ -216,7 +217,9 @@ def auth():
 @app.route('/auth/callback', methods=['GET'])
 def auth_callback():
     shop = request.args.get('shop')
-    code = request.args.get('code')
+    code =
+
+ request.args.get('code')
     state = request.args.get('state')
 
     # Échanger le code contre un access token
@@ -242,59 +245,72 @@ if __name__ == "__main__":
     if not os.path.exists('static'):
         os.makedirs('static')
     app.run(host='0.0.0.0', port=5000, debug=True)
+```
 
-requirements.txt
+### `requirements.txt`
 
 Gèle tes dépendances.
 
+```txt
 Flask==2.0.3
 requests==2.27.1
 Pillow==9.0.1
 python-dotenv==0.20.0
 gunicorn==20.1.0
+```
 
-Procfile
+### `Procfile`
 
 Définit le type de processus pour le déploiement sur DigitalOcean.
 
+```txt
 web: gunicorn app:app
+```
 
-.env
+### `.env`
 
 Stocke tes variables d’environnement de manière sécurisée.
 
+```txt
 STABILITY_API_KEY=ta_clé_api_stability_ai
 SHOPIFY_API_KEY=ta_clé_api_shopify
 SHOPIFY_API_SECRET=ton_secret_api_shopify
 REDIRECT_URI=https://pocheetfils.digitalocean.app/auth/callback
+```
 
-Créer le Répertoire Static
+### Créer le Répertoire Static
 
 Assure-toi que le dossier static existe pour stocker les images générées.
 
+```bash
 mkdir static
+```
 
-Développer le Frontend avec React et Shopify Polaris
+---
+
+## Développer le Frontend avec React et Shopify Polaris
 
 Shopify utilise principalement React avec Polaris (leur bibliothèque de composants UI) pour le développement frontend des applications. Nous allons créer une application React qui interagit avec notre backend Flask pour générer et afficher les images.
 
-Initialiser une Application React
+### Initialiser une Application React
 
-	1.	Créer une Application React :
+1. Crée une Application React :
 
+```bash
 npx create-react-app shopify-app-frontend
 cd shopify-app-frontend
+```
 
+### Installer Polaris et Axios
 
-
-Installer Polaris et Axios
-
+```bash
 npm install @shopify/polaris @shopify/app-bridge-react axios
+```
 
-Construire l’Interface Utilisateur
+### Construire l’Interface Utilisateur
 
-	1.	Modifier src/App.js :
-
+1. Modifier `src/App.js` :
+```javascript
 import React, { useState } from 'react';
 import '@shopify/polaris/dist/styles.css';
 import { AppProvider, Page, Card, TextField, Button, Stack, Image, DisplayText } from '@shopify/polaris';
@@ -374,32 +390,35 @@ function App() {
 }
 
 export default App;
+```
 
-
-
-Connecter le Frontend au Backend
+### Connecter le Frontend au Backend
 
 Assure-toi que l’application React communique correctement avec le backend Flask. Lors du déploiement, mets à jour l’URL de la requête Axios pour pointer vers le backend en production.
 
-Configurer le Proxy pour le Développement
+### Configurer le Proxy pour le Développement
 
-Pour éviter les problèmes de CORS pendant le développement, configure un proxy dans package.json de ton application React :
+Dans `package.json`, ajoute :
 
+```json
 {
-  // ... autres configurations
   "proxy": "http://localhost:5000"
 }
+```
 
-Cela permet à Axios d’envoyer des requêtes à /generate-images sans spécifier l’URL complète du backend.
+Cela permet à Axios d’envoyer des requêtes à `/generate-images` sans spécifier l’URL complète du backend.
 
-Implémenter l’Authentification OAuth avec Shopify
+---
+
+## Implémenter l’Authentification OAuth avec Shopify
 
 Pour que l’application Shopify puisse accéder aux données d’une boutique, il est nécessaire d’implémenter l’authentification OAuth. Voici comment procéder :
 
-Configurer les Routes OAuth dans Flask
+### Configurer les Routes OAuth dans Flask
 
-Ajoute les routes nécessaires pour gérer le flux OAuth de Shopify dans app.py.
+Ajoute les routes nécessaires pour gérer le flux OAuth de Shopify dans `app.py`.
 
+```python
 @app.route('/auth', methods=['GET'])
 def auth():
     shop = request.args.get('shop')
@@ -414,216 +433,104 @@ def auth():
         auth_url = f"https://{shop}/admin/oauth/authorize?" + urlencode(params)
         return redirect(auth_url)
     return "Paramètre shop manquant", 400
+```
 
-@app.route('/auth/callback', methods=['GET'])
-def auth_callback():
-    shop = request.args.get('shop')
-    code = request.args.get('code')
-    state = request.args.get('state')
+### Configurer les Paramètres de l’App Shopify
 
-    # Échanger le code contre un access token
-    token_url = f"https://{shop}/admin/oauth/access_token"
-    data = {
-        "client_id": SHOPIFY_API_KEY,
-        "client_secret": SHOPIFY_API_SECRET,
-        "code": code
-    }
-    response = requests.post(token_url, data=data)
-    response_data = response.json()
-    access_token = response_data.get('access_token')
+1. **Définir les URLs de Redirection** :
+    - Dans ton tableau de bord Shopify Partner, navigue vers les paramètres de ton application.
+    - Assure-toi que l’URL de redirection correspond à `REDIRECT_URI` dans ton fichier `.env` (exemple : `https://pocheetfils.digitalocean.app/auth/callback`).
 
-    if access_token:
-        # TODO : Sauvegarder l'access token de manière sécurisée (par exemple, dans une base de données)
-        return "Authentification réussie"
-    else:
-        return "Échec de l'authentification", 400
+2. **Définir les Scopes** :
+    - Ajuste le paramètre scope dans la route OAuth pour demander les permissions nécessaires.
 
-Configurer les Paramètres de l’App Shopify
+---
 
-	1.	Définir les URLs de Redirection :
-	•	Dans ton tableau de bord Shopify Partner, navigue vers les paramètres de ton application.
-	•	Assure-toi que l’URL de redirection correspond à REDIRECT_URI dans ton fichier .env (exemple : https://pocheetfils.digitalocean.app/auth/callback).
-	2.	Définir les Scopes :
-	•	Ajuste le paramètre scope dans la route OAuth pour demander les permissions nécessaires.
+## Déployer l’Application sur DigitalOcean
 
-Sécuriser le Flux OAuth
+### Préparer le Serveur sur DigitalOcean
 
-	•	Paramètre d’État (State) : Utilise un jeton aléatoire sécurisé pour protéger contre les attaques CSRF.
-	•	Stocker les Access Tokens : Utilise une méthode sécurisée (comme une base de données) pour stocker les tokens d’accès Shopify.
+1. **Créer un Droplet** :
+    - Connecte-toi à ton compte DigitalOcean et crée un nouveau Droplet.
+    - Choisis une image Ubuntu et sélectionne les ressources nécessaires.
+    - Configure les paramètres de sécurité (pare-feu, clés SSH, etc.).
 
-Déployer l’Application sur DigitalOcean
+2. **Configurer le Serveur** :
+    - Connecte-toi à ton Droplet via SSH.
+    - Mets à jour le système :
+    
+    ```bash
+    sudo apt update && sudo apt upgrade -y
+    ```
+   
+---
 
-Pour rendre notre application accessible depuis Shopify, elle doit être hébergée sur un serveur accessible publiquement avec un certificat SSL valide (HTTPS).
+### Déployer le Backend Flask
 
-Préparer le Serveur sur DigitalOcean
+1. **Cloner le Projet sur le Serveur** :
+    ```bash
+    git clone https://github.com/ton-repo/shopify-image-generator.git
+    cd shopify-image-generator
+    ```
 
-	1.	Créer un Droplet :
-	•	Connecte-toi à ton compte DigitalOcean et crée un nouveau Droplet.
-	•	Choisis une image Ubuntu et sélectionne les ressources nécessaires.
-	•	Configure les paramètres de sécurité (pare-feu, clés SSH, etc.).
-	2.	Configurer le Serveur :
-	•	Connecte-toi à ton Droplet via SSH.
-	•	Mets à jour le système :
+2. **Configurer l’Environnement Virtuel** :
+    ```bash
+    python3 -m venv venv
+    source venv/bin/activate
+    pip install -r requirements.txt
+    ```
 
-sudo apt update && sudo apt upgrade -y
+3. **Configurer les Variables d’Environnement** :
+    - Crée un fichier `.env` sur le serveur avec les mêmes variables que localement.
 
+---
 
-	•	Installe Python, pip et d’autres dépendances si ce n’est pas déjà fait.
+### Déployer le Frontend React
 
-Déployer le Backend Flask
+1. **Construire l’Application React** :
+    ```bash
+    npm run build
+    ```
 
-	1.	Cloner le Projet sur le Serveur :
+2. **Transférer les Fichiers de Build sur le Serveur** :
+    - Utilise `scp` ou `rsync` pour copier le dossier build sur le serveur DigitalOcean.
 
-git clone https://github.com/ton-repo/shopify-image-generator.git
-cd shopify-image-generator
+3. **Configurer un Serveur Web pour Servir le Frontend** :
+    - Tu peux utiliser Nginx pour servir les fichiers statiques React.
 
+---
 
-	2.	Configurer l’Environnement Virtuel :
+## Tester et Finaliser l’App
 
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
+### Tests Locaux
 
+1. Exécuter le Backend :
+    ```bash
+    python app.py
+    ```
 
-	3.	Configurer les Variables d’Environnement :
-	•	Crée un fichier .env sur le serveur avec les mêmes variables que localement.
+2. Exécuter le Frontend :
+    ```bash
+    npm start
+    ```
 
-nano .env
+### Tests en Production
 
-	•	Ajoute les lignes suivantes :
+1. Accéder à l’App Déployée :
+    - Navigue vers l’URL de ton frontend déployé sur DigitalOcean.
 
-STABILITY_API_KEY=ta_clé_api_stability_ai
-SHOPIFY_API_KEY=ta_clé_api_shopify
-SHOPIFY_API_SECRET=ton_secret_api_shopify
-REDIRECT_URI=https://pocheetfils.digitalocean.app/auth/callback
+---
 
+## Soumettre à l’App Store Shopify
 
-	4.	Configurer Gunicorn et Nginx :
-	•	Installer Gunicorn (déjà dans requirements.txt).
-	•	Installer Nginx :
+1. **Préparer la Fiche de l’App** :
+    - Fournis une description claire,
 
-sudo apt install nginx
+ des captures d’écran et les informations nécessaires sur ton application.
 
+2. **Soumettre pour Révision** :
+    - Dans le tableau de bord Shopify Partner, soumets ton application pour révision.
 
-	•	Configurer Nginx :
+--- 
 
-sudo nano /etc/nginx/sites-available/shopify-image-generator
-
-	•	Ajoute la configuration suivante :
-
-server {
-    listen 80;
-    server_name pocheetfils.digitalocean.app;
-
-    location / {
-        proxy_pass http://127.0.0.1:5000;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-    }
-
-    location /static/ {
-        alias /path/to/shopify-image-generator/static/;
-    }
-}
-
-	•	Remplace /path/to/shopify-image-generator/static/ par le chemin réel de ton dossier static.
-
-	•	Activer la Configuration et Redémarrer Nginx :
-
-sudo ln -s /etc/nginx/sites-available/shopify-image-generator /etc/nginx/sites-enabled
-sudo nginx -t
-sudo systemctl restart nginx
-
-
-	5.	Lancer l’Application avec Gunicorn :
-
-gunicorn app:app --bind 127.0.0.1:5000
-
-	•	Pour un déploiement en production, envisage d’utiliser un gestionnaire de processus comme Supervisor ou systemd pour gérer Gunicorn.
-
-Déployer le Frontend React
-
-	1.	Construire l’Application React :
-
-npm run build
-
-
-	2.	Transférer les Fichiers de Build sur le Serveur :
-	•	Utilise scp ou rsync pour copier le dossier build sur le serveur DigitalOcean.
-
-scp -r build/ user@pocheetfils.digitalocean.app:/path/to/shopify-app-frontend/
-
-
-	3.	Configurer un Serveur Web pour Servir le Frontend :
-	•	Tu peux utiliser Nginx pour servir les fichiers statiques React.
-	•	Modifier la Configuration Nginx :
-
-sudo nano /etc/nginx/sites-available/shopify-image-generator
-
-	•	Ajoute une location pour le frontend :
-
-server {
-    listen 80;
-    server_name pocheetfils.digitalocean.app;
-
-    location /api/ {
-        proxy_pass http://127.0.0.1:5000/;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-    }
-
-    location / {
-        root /path/to/shopify-app-frontend/build;
-        try_files $uri /index.html;
-    }
-
-    location /static/ {
-        alias /path/to/shopify-image-generator/static/;
-    }
-}
-
-	•	Remplace /path/to/shopify-app-frontend/build par le chemin réel de ton dossier build.
-
-	•	Redémarrer Nginx :
-
-sudo systemctl restart nginx
-
-Tester et Finaliser l’App
-
-Tests Locaux
-
-	1.	Exécuter le Backend :
-
-python app.py
-
-
-	2.	Exécuter le Frontend :
-
-npm start
-
-
-	3.	Tester les Fonctionnalités :
-	•	Ouvre l’application React dans ton navigateur.
-	•	Entre un prompt et génère des images.
-	•	Vérifie que les images sont traitées et affichées correctement.
-
-Tests en Production
-
-	1.	Accéder à l’App Déployée :
-	•	Navigue vers l’URL de ton frontend déployé sur DigitalOcean.
-	•	Effectue les mêmes tests qu’en local pour assurer le bon fonctionnement en production.
-
-Soumettre à l’App Store Shopify
-
-	1.	Préparer la Fiche de l’App :
-	•	Fournis une description claire, des captures d’écran et les informations nécessaires sur ton application.
-	2.	Soumettre pour Révision :
-	•	Dans le tableau de bord Shopify Partner, soumets ton application pour révision.
-	•	Réponds aux éventuels retours de Shopify durant le processus de révision.
-
-
-
+Cela couvre les étapes nécessaires pour créer, déployer et finaliser l’application Shopify Image Generator.
