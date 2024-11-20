@@ -1,6 +1,4 @@
-Voici la version réécrite avec les balises Markdown correctement formatées :
 
-```markdown
 # Documentation de l'Application Shopify Image Generator pour Poche et Fils
 
 Salut Jeff,
